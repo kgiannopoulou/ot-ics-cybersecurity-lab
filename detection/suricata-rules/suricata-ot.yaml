@@ -1,0 +1,46 @@
+%YAML 1.1
+---
+# Minimal Suricata config for the IT/OT conduit sensor.
+vars:
+  address-groups:
+    HOME_NET: "[10.10.10.0/24,10.20.20.0/24,10.30.30.0/24]"
+    EXTERNAL_NET: "!$HOME_NET"
+  port-groups:
+    HTTP_PORTS: "80"
+
+af-packet:
+  - interface: eth0
+    cluster-id: 99
+    cluster-type: cluster_flow
+    defrag: yes
+  - interface: default
+
+default-log-dir: /var/log/suricata/
+default-rule-path: /var/lib/suricata/rules
+rule-files:
+  - modbus-ot.rules
+
+app-layer:
+  protocols:
+    modbus:
+      enabled: yes
+      detection-ports:
+        dp: 502
+      stream-depth: 0
+
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert:
+            metadata: yes
+        - flow
+        - anomaly
+  - fast:
+      enabled: yes
+      filename: fast.log
+
+classification-file: /etc/suricata/classification.config
+reference-config-file: /etc/suricata/reference.config

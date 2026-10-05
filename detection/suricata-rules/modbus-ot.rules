@@ -1,0 +1,40 @@
+# ---------------------------------------------------------------------------
+# OT detection rules for the water tank lab (Suricata 7, modbus app-layer)
+# Baseline: the only legitimate Modbus client is the HMI 10.30.30.20. It polls
+# FC1 (read coils) + FC3 (read holding registers) every second and writes only
+# coil 1 (outlet valve, FC5) when an operator presses the button.
+# SIDs 9000001-9000099 are reserved for this lab.
+# ---------------------------------------------------------------------------
+
+# Allow-list violation: a Modbus client that is not the HMI
+alert modbus !10.30.30.20 any -> 10.30.30.10 502 (msg:"OT Modbus traffic from unauthorised client"; flow:to_server,established; threshold:type limit, track by_src, count 1, seconds 60; classtype:policy-violation; metadata:mitre_ics T0886; sid:9000001; rev:1;)
+
+# Modbus crossing the IT/OT boundary (impossible if the firewall is correct)
+alert tcp 10.10.10.0/24 any -> 10.30.30.0/24 502 (msg:"OT Modbus connection attempt from IT zone"; flags:S; classtype:policy-violation; metadata:mitre_ics T0886; sid:9000002; rev:1;)
+
+# Writes from anyone other than the HMI
+alert modbus !10.30.30.20 any -> 10.30.30.10 502 (msg:"OT Modbus WRITE from non-HMI host"; modbus: access write; classtype:attempted-admin; metadata:mitre_ics T0855; sid:9000003; rev:1;)
+
+# Setpoint registers (HR1/HR2) change only through an engineering change
+alert modbus any any -> 10.30.30.10 502 (msg:"OT Modbus write to tank setpoint registers"; modbus: access write holding, address <3; classtype:attempted-admin; metadata:mitre_ics T0836; sid:9000004; rev:1;)
+
+# Pump (coil 0) and mode coils (2,3) belong to the PLC; the HMI only writes coil 1
+alert modbus any any -> 10.30.30.10 502 (msg:"OT Modbus write to PLC-owned pump coil"; modbus: access write coils, address 0; classtype:attempted-admin; metadata:mitre_ics T0855; sid:9000005; rev:1;)
+alert modbus any any -> 10.30.30.10 502 (msg:"OT Modbus write to PLC-owned mode coils"; modbus: access write coils, address >1; classtype:attempted-admin; metadata:mitre_ics T0858; sid:9000013; rev:1;)
+
+# Diagnostic / identification function codes are never used in normal operation
+alert modbus any any -> 10.30.30.10 502 (msg:"OT Modbus diagnostics request (FC8)"; modbus: function 8; classtype:attempted-recon; metadata:mitre_ics T0888; sid:9000006; rev:1;)
+alert modbus any any -> 10.30.30.10 502 (msg:"OT Modbus encapsulated interface / device identification (FC43)"; modbus: function 43; classtype:attempted-recon; metadata:mitre_ics T0888; sid:9000007; rev:1;)
+
+# Rate anomaly: the HMI writes a few times per shift, not every second
+alert modbus any any -> 10.30.30.10 502 (msg:"OT Modbus write burst (>10 writes in 10 s)"; modbus: access write; threshold:type threshold, track by_src, count 10, seconds 10; classtype:attempted-admin; metadata:mitre_ics T0806; sid:9000008; rev:1;)
+
+# Horizontal sweep for port 502 across the OT subnet
+alert tcp any any -> 10.30.30.0/24 502 (msg:"OT Modbus port sweep"; flags:S; threshold:type both, track by_src, count 5, seconds 30; classtype:attempted-recon; metadata:mitre_ics T0846; sid:9000009; rev:1;)
+
+# OT should never initiate connections to the internet
+alert ip 10.30.30.0/24 any -> $EXTERNAL_NET any (msg:"OT host connection to external network"; threshold:type limit, track by_src, count 1, seconds 300; classtype:policy-violation; metadata:mitre_ics T0884; sid:9000010; rev:1;)
+
+# Protocol anomalies reported by the modbus parser
+alert modbus any any -> any any (msg:"OT Modbus invalid protocol id"; app-layer-event:modbus.invalid_protocol_id; classtype:protocol-command-decode; sid:9000011; rev:1;)
+alert modbus any any -> any any (msg:"OT Modbus invalid function code"; app-layer-event:modbus.invalid_function_code; classtype:protocol-command-decode; sid:9000012; rev:1;)

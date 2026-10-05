@@ -1,0 +1,68 @@
+# Lightweight build of the lab. It reproduces the zone model with Docker networks.
+# The full build (pfSense, OpenPLC, ScadaBR, Wazuh VMs) is described in docs/vm-build.md.
+#
+#   it_net  10.10.10.0/24  : engineering workstation / SOC
+#   sup_net 10.20.20.0/24  : supervisory / DMZ leg (HMI operator UI)
+#   ot_net  10.30.30.0/24  : PLC + HMI (internal: no route to the internet)
+#
+# The "fw" container is the only host with a leg in both IT and OT, mirroring the pfSense box.
+# Suricata taps the PLC's interface, like a SPAN port on the OT switch.
+
+services:
+  plc:
+    build: { context: ., dockerfile: simulator/Dockerfile }
+    container_name: plc-water-tank
+    networks:
+      ot_net: { ipv4_address: 10.30.30.10 }
+    restart: unless-stopped
+
+  hmi:
+    build: { context: ., dockerfile: hmi/Dockerfile }
+    container_name: hmi-scada
+    environment:
+      PLC_HOST: 10.30.30.10
+      PLC_PORT: "502"
+    networks:
+      ot_net: { ipv4_address: 10.30.30.20 }
+      # Operator-facing leg (Purdue L3 supervisory). The OT network itself is
+      # internal-only, so the web UI is published through this network.
+      sup_net: { ipv4_address: 10.20.20.20 }
+    ports:
+      - "127.0.0.1:8080:8080"   # operator view, published to localhost only
+    depends_on: [plc]
+    restart: unless-stopped
+
+  fw:
+    image: alpine:3.20
+    container_name: fw-it-ot
+    cap_add: [NET_ADMIN]
+    sysctls:
+      net.ipv4.ip_forward: "1"
+    volumes:
+      - ./firewall/iptables-it-ot.sh:/fw.sh:ro
+    command: ["sh", "-c", "apk add --no-cache iptables >/dev/null && sh /fw.sh && tail -f /dev/null"]
+    networks:
+      it_net: { ipv4_address: 10.10.10.254 }
+      ot_net: { ipv4_address: 10.30.30.254 }
+
+  suricata:
+    image: jasonish/suricata:7.0
+    container_name: ids-suricata
+    # Shares the PLC's network stack: equivalent to a passive tap/SPAN port
+    # in front of the controller, so it sees every Modbus session to the PLC.
+    network_mode: "service:plc"
+    cap_add: [NET_ADMIN, NET_RAW, SYS_NICE]
+    volumes:
+      - ./detection/suricata-rules:/lab:ro
+      - ./logs/suricata:/var/log/suricata
+    command: ["-c", "/lab/suricata-ot.yaml", "-S", "/lab/modbus-ot.rules", "-i", "eth0"]
+    depends_on: [plc]
+
+networks:
+  it_net:
+    ipam: { config: [{ subnet: 10.10.10.0/24 }] }
+  sup_net:
+    ipam: { config: [{ subnet: 10.20.20.0/24 }] }
+  ot_net:
+    internal: true
+    ipam: { config: [{ subnet: 10.30.30.0/24 }] }
