@@ -5,6 +5,7 @@
 | **Zone** | Conduit IT (L4) ↔ OT (L1–L2) |
 | **ATT&CK for ICS** | T0886 Remote Services · T0866 Exploitation of Remote Services (precondition) · T0822 External Remote Services |
 | **IEC 62443-3-3** | SR 5.1 network segmentation, SR 5.2 zone boundary protection, SR 2.8 auditable events |
+| **Difficulty** | 🟢 Low — a compromised IT host probing toward OT |
 | **Status** | ✅ Executed and validated in the Docker build on 2026-10-05 |
 
 ## Story

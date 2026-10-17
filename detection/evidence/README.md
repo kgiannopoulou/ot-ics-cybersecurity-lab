@@ -42,3 +42,10 @@ Input 1 is the **real** EVE alert from (2). Inputs 2–5 are **synthetic rule-te
 $ python -m pytest -q tests/
 7 passed
 ```
+
+## 5. Automated red/blue validation (regenerated)
+`validation-report.md` and `validation-run-fast.log` are produced by
+`python tools/validate.py` against the Docker lab: each scenario is run from the
+rogue container (10.30.30.66), detected by Suricata, then dropped once the PLC
+host allow-list is applied. `validation-run-fast.log` is the live Suricata
+`fast.log` from that run. See [`../../docs/validation.md`](../../docs/validation.md).

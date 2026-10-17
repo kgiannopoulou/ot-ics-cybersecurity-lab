@@ -1,0 +1,9 @@
+# Expected SHA-256 of the committed lab captures, so a lab run is reproducible
+# against the exact traffic the detections were validated on.
+#
+#   sha256sum -c pcaps/SHA256SUMS          # (from the repo root)
+#
+# The baseline is deterministic and must replay through Suricata with 0 alerts
+# (attack-scenarios/scenario-01, docs/validation.md). If this hash changes, the
+# capture was modified and the "0 false positives" result must be re-verified.
+6b9900e9822cf50a20f2785589d7a45f092d41d164e5faff35eb3ec00e0fdeed  pcaps/baseline-normal-modbus.pcap

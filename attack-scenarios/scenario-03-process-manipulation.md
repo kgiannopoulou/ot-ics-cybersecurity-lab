@@ -5,7 +5,9 @@
 | **Zone** | OT (Purdue L1–L2) |
 | **ATT&CK for ICS** | T0855 Unauthorized Command Message · T0836 Modify Parameter · T0858 Change Operating Mode · T0831 Manipulation of Control · T0880 Loss of Safety (impact) |
 | **IEC 62443-3-3** | SR 3.1 communication integrity, SR 3.5 input validation, SR 3.6 deterministic output, SR 6.2 continuous monitoring |
-| **Status** | 📋 Detection logic and in-controller safeguards implemented; live execution left for the VM build (see note) |
+| **Difficulty** | 🔴 High — assumes an OT foothold *and* process/safety knowledge |
+| **Status** | ✅ Executed and validated against the Docker lab (`tools/validate.py`) and in CI (`tests/test_attack_scenarios.py`) |
+| **Run it** | `python -m attack.run setpoint` · `pump` · `mode` · `overflow` `--target 10.30.30.10` |
 
 ## Story
 This is the high-impact case: an adversary on the OT network (Scenario 01) or controlling the HMI uses Modbus write function codes to change the process instead of just observing it. In the water tank, the objectives would be:
@@ -46,5 +48,18 @@ So even a successful unauthorised write can't push the tank beyond its safe enve
 4. Containment: block the source at the switch/host firewall; put the process in a known-safe state (manual, local control) following the operating procedure, **not** by improvising on the live process.
 5. Recovery: restore setpoints from the version-controlled program; confirm with operations before returning to AUTO.
 
-## Note on execution
-Live validation of the write rules is planned for the full VM build (OpenPLC + ScadaBR), where the tests run against the isolated lab only. All rules were syntax-validated against Suricata 7.0.17 (13/13 loaded) and produce zero alerts on the baseline capture.
+## Execution & validation
+The write scenarios now execute for real against the Docker lab. `tools/validate.py`
+runs each one from the rogue container and records the outcome in
+[`../detection/evidence/validation-report.md`](../detection/evidence/validation-report.md):
+
+- **Unmitigated:** the writes reach the PLC and Suricata fires (9000003 for any
+  non-HMI write, plus 9000004/5/13 for the specific target).
+- **After the host allow-list** (`simulator/plc_allowlist.sh on`): the attacker is
+  dropped before Modbus — the writes never arrive.
+- **Controller-side:** `overflow` is capped at ~95 % by the safety interlock and
+  the tampered setpoint is reset by input validation, proven in CI
+  (`tests/test_attack_scenarios.py`) independent of the network controls.
+
+All 13 rules load on Suricata 7 and produce zero alerts on the baseline capture
+(`pcaps/baseline-normal-modbus.pcap`, hash pinned in `pcaps/SHA256SUMS`).

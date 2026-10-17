@@ -13,6 +13,14 @@ The lab follows the full defender workflow: **normal → anomaly → detection �
 - **10 Wazuh rules**, including a level-15 **recon → process-write correlation**, validated with `wazuh-logtest`
 - Three documented scenarios with ATT&CK for ICS and IEC 62443 mappings, investigation playbooks and mitigations
 - Threat model and a security assessment report with prioritised findings
+- **Repeatable attack scripts** and an **automated red/blue harness** (`tools/validate.py`): every scenario proves *attack → detected → blocked* against the live lab, and the in-controller safeguards run in CI
+
+## Simulated vs. real
+Everything in this lab is **simulated** — there is no real PLC, process or
+network hardware. What stands in for what, and the rules for running it safely,
+are in **[docs/safety.md](docs/safety.md)**. The control logic, Modbus protocol
+behaviour, segmentation model and detections are faithful; the process is
+physics in software.
 
 ## Objective
 Show why IT and OT are separated, which traffic may cross zones, what happens when an unauthorised workstation talks to a PLC, and which controls reduce that risk, with evidence rather than only screenshots.
@@ -54,16 +62,26 @@ Modbus map and program: [`plc/water-tank-program/`](plc/water-tank-program/) · 
 Modbus/TCP has **no authentication and no integrity protection**. Any host that reaches TCP 502 is a valid master. The design therefore layers network segmentation, protocol-aware monitoring and validation inside the controller. Full model: [`docs/threat-model.md`](docs/threat-model.md)
 
 ## Detection scenarios
-| # | Scenario | ATT&CK for ICS | Result |
-|---|---|---|---|
-| 01 | [Unauthorised workstation communicates with the PLC](attack-scenarios/scenario-01-unauthorised-plc-access.md) | T0886, T0861 | ✅ Detected (SID 9000001 → Wazuh 100201). ⚠️ PLC still served the read → finding F-01 |
-| 02 | [IT host attempts to reach the PLC](attack-scenarios/scenario-02-it-to-ot-pivot.md) | T0886, T0866 | ✅ Blocked and logged by the conduit firewall |
-| 03 | [Unauthorised change to process control values](attack-scenarios/scenario-03-process-manipulation.md) | T0855, T0836, T0858 | 📋 Rules and in-PLC safeguards implemented and rule-tested; live run planned for VM build |
+
+Each scenario is a script you can run (`attack/`), not only prose, and is
+validated automatically (`tools/validate.py`, [docs/validation.md](docs/validation.md)).
+Difficulty is the attacker capability assumed: 🟢 on-network access · 🟡 OT
+foothold + protocol knowledge · 🔴 process/safety understanding.
+
+| # | Scenario | Difficulty | ATT&CK for ICS | Result |
+|---|---|---|---|---|
+| 01 | [Unauthorised workstation reads the PLC](attack-scenarios/scenario-01-unauthorised-plc-access.md) | 🟢 | T0886, T0861, T0846 | ✅ Detected (SID 9000001 → Wazuh 100201); ✅ blocked by the host allow-list. ⚠️ unmitigated the PLC served the read → F-01 |
+| 02 | [IT host attempts to reach the PLC](attack-scenarios/scenario-02-it-to-ot-pivot.md) | 🟢 | T0886, T0866 | ✅ Blocked and logged by the conduit firewall |
+| 03 | [Unauthorised change to process control values](attack-scenarios/scenario-03-process-manipulation.md) | 🔴 | T0855, T0836, T0858, T0831, T0880 | ✅ Detected (SID 9000003/4/5/13); ✅ blocked by the allow-list; ✅ contained by input validation + the safety interlock — validated live and in CI |
+
+Run them: `python -m attack.run {recon,sweep,setpoint,pump,mode,overflow} --target 10.30.30.10`
+([attack/README.md](attack/README.md)). ⚠️ **Isolated lab only** — see
+[docs/safety.md](docs/safety.md).
 
 ## Findings & mitigations
 | ID | Finding | Severity | Mitigation |
 |---|---|---|---|
-| F-01 | PLC serves Modbus to any OT host | High | Host allow-list (HMI only), switch port security / 802.1X |
+| F-01 | PLC serves Modbus to any OT host | High | Host allow-list (HMI only, `simulator/plc_allowlist.sh`), switch port security / 802.1X — **validated**: the attack is dropped once applied |
 | F-03 | Modbus lacks auth/integrity | High (accepted) | Segmentation, allow-list IDS, interlock + setpoint validation |
 | F-04 | Default credentials on OpenPLC / ScadaBR | Medium | Change and separate operator/engineer roles |
 | F-05 | No independent SIS | Medium | Separate safety system in real deployments |
@@ -78,8 +96,15 @@ cd ot-ics-cybersecurity-lab
 docker compose up -d --build
 # HMI:            http://127.0.0.1:8080
 # Suricata alerts: logs/suricata/fast.log
-python -m pytest tests/      # control-logic unit tests (pip install -r requirements.txt pytest)
+python -m pytest tests/      # control-logic + attack-scenario tests (pip install -r requirements.txt pytest)
+
+# Red/blue: run an attack, then prove detection + mitigation end to end
+docker compose --profile redteam up -d --build
+python -m attack.run recon --target 10.30.30.10
+python tools/validate.py --report detection/evidence/validation-report.md
 ```
+⚠️ **Isolated lab only.** The attack scripts speak Modbus to the lab's own PLC;
+never point them at equipment you are not authorised to test ([docs/safety.md](docs/safety.md)).
 The full VirtualBox/VMware build with pfSense, OpenPLC, ScadaBR and Wazuh: [`docs/vm-build.md`](docs/vm-build.md)
 
 ## Repository layout
@@ -96,6 +121,8 @@ ot-ics-cybersecurity-lab/
 │   ├── wazuh/           custom rules, agent config
 │   └── evidence/        validation output
 ├── pcaps/               baseline capture + analysis filters
+├── attack/              repeatable attack scripts (Modbus client) + red-team container
+├── tools/               validate.py red/blue harness
 ├── attack-scenarios/    detection scenarios 01–03
 ├── screenshots/
 ├── tests/               control-logic unit tests

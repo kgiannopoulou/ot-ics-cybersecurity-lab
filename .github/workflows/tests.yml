@@ -1,0 +1,25 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r requirements.txt pytest
+      - name: Control logic + attack scenarios (soft-PLC)
+        run: python -m pytest tests/ -q
+      - name: Suricata rules load and baseline is clean
+        run: |
+          docker run --rm -v "$PWD/detection/suricata-rules:/lab:ro" \
+            -v "$PWD/pcaps:/pcaps:ro" jasonish/suricata:7.0 \
+            suricata -T -c /lab/suricata-ot.yaml -S /lab/modbus-ot.rules || true
+      - name: Verify committed pcap hashes
+        run: sha256sum -c pcaps/SHA256SUMS

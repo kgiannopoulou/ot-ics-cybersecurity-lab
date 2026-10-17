@@ -12,6 +12,9 @@ services:
   plc:
     build: { context: ., dockerfile: simulator/Dockerfile }
     container_name: plc-water-tank
+    # NET_ADMIN so the container can enforce the host Modbus allow-list
+    # (F-01 mitigation). Off by default: the baseline is the vulnerable state.
+    cap_add: [NET_ADMIN]
     networks:
       ot_net: { ipv4_address: 10.30.30.10 }
     restart: unless-stopped
@@ -56,6 +59,16 @@ services:
       - ./detection/suricata-rules:/lab:ro
       - ./logs/suricata:/var/log/suricata
     command: ["-c", "/lab/suricata-ot.yaml", "-S", "/lab/modbus-ot.rules", "-i", "eth0"]
+    depends_on: [plc]
+
+  # Unauthorised workstation on the OT network (10.30.30.66). Only started
+  # under the "redteam" profile or by tools/validate.py; idles otherwise.
+  attacker:
+    build: { context: ., dockerfile: attack/Dockerfile }
+    container_name: ot-attacker
+    profiles: ["redteam"]
+    networks:
+      ot_net: { ipv4_address: 10.30.30.66 }
     depends_on: [plc]
 
 networks:

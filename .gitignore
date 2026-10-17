@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
+
+# transient lab output
+logs/suricata/eve.json
+__pycache__/
+.pytest_cache/

@@ -1,0 +1,55 @@
+10/17/2026-09:40:19.856831  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:40492 -> 10.30.30.10:502
+10/17/2026-09:40:26.460046  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:33504 -> 10.30.30.10:502
+10/17/2026-09:40:57.072717  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:48766 -> 10.30.30.10:502
+10/17/2026-09:40:57.073802  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:48766 -> 10.30.30.10:502
+10/17/2026-09:41:09.691223  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:52020 -> 10.30.30.10:502
+10/17/2026-09:41:19.482078  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:47372 -> 10.30.30.10:502
+10/17/2026-09:41:22.135750  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:47384 -> 10.30.30.10:502
+10/17/2026-09:41:22.135750  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:47384 -> 10.30.30.10:502
+10/17/2026-09:41:22.135750  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:47384 -> 10.30.30.10:502
+10/17/2026-09:41:22.136188  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:47384 -> 10.30.30.10:502
+10/17/2026-09:41:22.136188  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:47384 -> 10.30.30.10:502
+10/17/2026-09:43:11.761919  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:40448 -> 10.30.30.10:502
+10/17/2026-09:43:20.280340  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:47746 -> 10.30.30.10:502
+10/17/2026-09:43:50.703966  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:48696 -> 10.30.30.10:502
+10/17/2026-09:43:59.441033  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:41800 -> 10.30.30.10:502
+10/17/2026-09:44:04.009066  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:39844 -> 10.30.30.10:502
+10/17/2026-09:44:17.329458  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:54492 -> 10.30.30.10:502
+10/17/2026-09:44:17.329458  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:54492 -> 10.30.30.10:502
+10/17/2026-09:44:17.329458  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:54492 -> 10.30.30.10:502
+10/17/2026-09:44:17.329843  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:54492 -> 10.30.30.10:502
+10/17/2026-09:44:17.329843  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:54492 -> 10.30.30.10:502
+10/17/2026-09:44:22.823325  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:39936 -> 10.30.30.10:502
+10/17/2026-09:44:59.963767  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:44772 -> 10.30.30.10:502
+10/17/2026-09:45:30.378474  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:43634 -> 10.30.30.10:502
+10/17/2026-09:45:30.378474  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:43634 -> 10.30.30.10:502
+10/17/2026-09:45:39.148401  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:36002 -> 10.30.30.10:502
+10/17/2026-09:45:43.678162  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:36274 -> 10.30.30.10:502
+10/17/2026-09:45:57.115564  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:53160 -> 10.30.30.10:502
+10/17/2026-09:45:57.115564  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:53160 -> 10.30.30.10:502
+10/17/2026-09:45:57.115937  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:53160 -> 10.30.30.10:502
+10/17/2026-09:45:57.115937  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:53160 -> 10.30.30.10:502
+10/17/2026-09:46:02.631360  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:60250 -> 10.30.30.10:502
+10/17/2026-09:46:44.394161  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:57762 -> 10.30.30.10:502
+10/17/2026-09:50:24.641715  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:54932 -> 10.30.30.10:502
+10/17/2026-09:50:34.252926  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:43148 -> 10.30.30.10:502
+10/17/2026-09:51:05.788383  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:41424 -> 10.30.30.10:502
+10/17/2026-09:51:14.519600  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:41306 -> 10.30.30.10:502
+10/17/2026-09:51:20.124686  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:41324 -> 10.30.30.10:502
+10/17/2026-09:51:31.829245  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:36770 -> 10.30.30.10:502
+10/17/2026-09:51:34.388612  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:49264 -> 10.30.30.10:502
+10/17/2026-09:51:34.388612  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:49264 -> 10.30.30.10:502
+10/17/2026-09:51:34.388612  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:49264 -> 10.30.30.10:502
+10/17/2026-09:51:34.389214  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:49264 -> 10.30.30.10:502
+10/17/2026-09:51:34.389214  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:49264 -> 10.30.30.10:502
+10/17/2026-09:52:29.003082  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:47326 -> 10.30.30.10:502
+10/17/2026-09:52:38.507603  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:58890 -> 10.30.30.10:502
+10/17/2026-09:53:09.970190  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:37930 -> 10.30.30.10:502
+10/17/2026-09:53:18.735184  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:51392 -> 10.30.30.10:502
+10/17/2026-09:53:24.354901  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:41718 -> 10.30.30.10:502
+10/17/2026-09:53:36.077091  [**] [1:9000009:1] OT Modbus port sweep [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.30.30.66:48180 -> 10.30.30.10:502
+10/17/2026-09:53:38.675022  [**] [1:9000001:1] OT Modbus traffic from unauthorised client [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.30.30.66:48196 -> 10.30.30.10:502
+10/17/2026-09:53:38.675022  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:48196 -> 10.30.30.10:502
+10/17/2026-09:53:38.675022  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:48196 -> 10.30.30.10:502
+10/17/2026-09:53:38.675533  [**] [1:9000003:1] OT Modbus WRITE from non-HMI host [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:48196 -> 10.30.30.10:502
+10/17/2026-09:53:38.675533  [**] [1:9000013:1] OT Modbus write to PLC-owned mode coils [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.30.30.66:48196 -> 10.30.30.10:502
