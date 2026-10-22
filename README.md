@@ -107,6 +107,62 @@ python tools/validate.py --report detection/evidence/validation-report.md
 never point them at equipment you are not authorised to test ([docs/safety.md](docs/safety.md)).
 The full VirtualBox/VMware build with pfSense, OpenPLC, ScadaBR and Wazuh: [`docs/vm-build.md`](docs/vm-build.md)
 
+## Design decisions
+
+**Why Modbus/TCP?** It is still the most widely deployed industrial protocol and the clearest
+example of the core OT problem: no authentication, no integrity, and any host that reaches TCP 502
+is a valid master. Defending it shows why segmentation and monitoring matter more than "patching"
+in OT.
+
+**Why allow-list detection instead of attack signatures?** An industrial network is small and
+predictable: the HMI polls the same registers on the same PLC every second. So the Suricata rules
+describe *what is allowed* (built from a captured baseline) and alert on everything else. That
+caught the unauthorised client immediately with zero false positives on normal traffic — a
+signature list would only catch attacks someone had already written down.
+
+**Why defence in depth inside the controller too?** Network controls can be bypassed by a
+compromised HMI that is *allowed* to write (finding F-06). Setpoint validation and a safety
+interlock in the PLC logic mean that even an accepted malicious write cannot overflow the tank —
+scenario 03 proves this live and in CI.
+
+**Why both a Docker build and a VM build?** The Docker build is what anyone can run in minutes and
+what CI tests; it reproduces the process, zones and detections faithfully with a Python soft PLC.
+The VM build uses the real tools (pfSense, OpenPLC, ScadaBR, Wazuh) for realism. Keeping the soft
+PLC's logic identical to the IEC 61131-3 program, with unit tests, keeps the two in step.
+
+**Why a red/blue harness?** Screenshots of alerts prove little. `tools/validate.py` runs each attack
+against the live lab and checks it was detected *and* blocked, so the claims in this README are
+re-checkable evidence ([docs/validation.md](docs/validation.md)).
+
+## Limitations
+
+* **Simulated process and hardware** — no real PLC, sensor or pump; physics is software.
+* **Single-protocol** — Modbus/TCP only; no DNP3, S7comm, EtherNet/IP or OPC UA.
+* **VM build** — documented in [docs/vm-build.md](docs/vm-build.md); the automated validation and CI
+  cover the Docker build.
+* **No safety instrumented system** — the interlock lives in the same controller (finding F-05); a
+  real plant would have an independent SIS.
+* **Small scale** — one PLC, one HMI; a real site has hundreds of assets and legacy devices that
+  can't be changed.
+
+## From lab to a real plant
+
+What would have to change for a real deployment:
+
+* **Asset inventory first** — passive discovery of every controller, firmware and conduit before any
+  rule is written; the allow-list rules depend on an accurate baseline.
+* **Change management** — IDS allow-lists and firewall conduits updated through the same change
+  process as PLC programs, or legitimate maintenance traffic floods the SOC with alerts.
+* **Remote access** — vendor access only through the DMZ jump host with MFA, time-limited
+  sessions and recording.
+* **Monitoring without risk** — sensors on SPAN/TAP ports only, never inline on control traffic;
+  OT-aware tuning in the SIEM and a playbook agreed with operations (in OT, availability and safety
+  outrank confidentiality).
+* **Backups and recovery** — offline copies of PLC programs and HMI configurations, and a tested
+  restore procedure.
+* **Standards** — a formal IEC 62443-3-2 risk assessment to set target security levels per zone,
+  rather than the lab's assumed SL-T.
+
 ## Repository layout
 ```
 ot-ics-cybersecurity-lab/
@@ -139,3 +195,7 @@ ot-ics-cybersecurity-lab/
 
 ## Ethics
 All testing is done only against systems in this isolated lab. Nothing here should be pointed at real industrial equipment.
+
+## License
+
+[MIT](LICENSE) © 2026 kgiannopoulou · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
